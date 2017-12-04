@@ -1,5 +1,6 @@
 {
-  "production": {
+  "default": "postgresql",
+  "postgresql": {
     "driver": "pg",
     "host": { "ENV": "PGHOST" },
     "database": { "ENV": "PGDATABASE" },
