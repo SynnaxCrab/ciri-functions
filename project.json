@@ -1,0 +1,8 @@
+{
+  "name": "ciri-db-migrations",
+  "description": "ciri db migrations",
+  "memory": 128,
+  "timeout": 5,
+  "role": "arn:aws:iam::085425006770:role/ciri-db-migrations_lambda_function",
+  "environment": {}
+}
