@@ -12,11 +12,10 @@ install:
 
 script:
   - echo "Just do nothing haha"
-  - ls ./functions/db-migrations
 
 deploy:
   provider: script
-  script: ./bin/apex deploy
+  script: sh ./deploy.sh
   skip_cleanup: true
   on:
     branch: master
