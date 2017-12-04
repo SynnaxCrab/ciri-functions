@@ -3,6 +3,6 @@
   "description": "ciri functions",
   "memory": 128,
   "timeout": 5,
-  "role": "arn:aws:iam::085425006770:role/ciri-db-migrations_lambda_function",
+  "role": "arn:aws:iam::085425006770:role/ciri-functions_lambda_function",
   "environment": {}
 }
