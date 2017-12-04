@@ -1,10 +1,10 @@
 language: node_js
 
 before_install:
-  - curl -sfLO https://raw.githubusercontent.com/apex/apex/master/install.sh
+  - curl -sfL https://github.com/apex/apex/releases/download/v0.16.0/apex_linux_amd64 -o ./bin/apex --create-dirs
+  - chmod +x ./bin/apex
 
 install:
-  - sh install.sh -b ./bin
   - ./bin/apex version
   - yarn install --cwd ./functions/db-migrations
 
@@ -12,7 +12,7 @@ cache: yarn
 
 deploy:
   provider: script
-  script: apex deploy
+  script: ./bin/apex deploy
   skip_cleanup: true
   on:
     branch: master
