@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "db-migrate": "^0.10.2",
-    "db-migrate-pg": "^0.2.5"
+    "db-migrate-pg": "^0.2.5",
+    "dotenv": "^4.0.0"
   }
 }
