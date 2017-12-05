@@ -8,6 +8,7 @@ before_install:
 
 install:
   - ./bin/apex version
+  - yarn install
   - yarn install --cwd ./functions/db-migrations
 
 script:
