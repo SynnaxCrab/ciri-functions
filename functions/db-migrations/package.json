@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "migration:create": "db-migrate create",
+    "db:reset": "db-migrate reset",
+    "migrate:up": "db-migrate up",
+    "migrate:up:dry-run": "db-migrate up --dry-run"
+  },
   "dependencies": {
     "db-migrate": "^0.10.2",
     "db-migrate-pg": "^0.2.5",

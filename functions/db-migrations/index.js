@@ -7,6 +7,8 @@ const dbm = DBM.getInstance(true)
 
 exports.handle = function(e, ctx, cb) {
   console.log('processing event: %j', e)
-  dbm.reset()
-  cb(null, { hello: 'world' })
+  dbm.up().then(() => {
+    console.log("successfully migrated")
+    cb(null, { status: 'done' })
+  })
 }
