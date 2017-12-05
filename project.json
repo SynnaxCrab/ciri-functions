@@ -4,5 +4,10 @@
   "memory": 128,
   "timeout": 5,
   "role": "arn:aws:iam::085425006770:role/ciri-functions_lambda_function",
-  "environment": {}
+  "environment": {},
+  "vpc": {
+    "name": "vpc-cc7c74aa",
+    "securityGroups": ["sg-c3a551bf"],
+    "subnets": ["subnet-ec2c5da4", "subnet-bc2677da", "subnet-0ac3d651"]
+  }
 }
