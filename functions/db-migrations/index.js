@@ -14,10 +14,18 @@ exports.handle = function(e, ctx, cb) {
         console.log("successfully migrated up")
         cb(null, { status: 'up done' })
       })
+      break
     case 'down':
-      dbm.down(1).then(() => {
+      dbm.down().then(() => {
         console.log("successfully migrated down")
         cb(null, { status: 'down done' })
       })
+      break
+    case 'reset':
+      dbm.reset().then(() => {
+        console.log("successfully reseted")
+        cb(null, { status: 'reset done' })
+      })
+      break
   }
 }
