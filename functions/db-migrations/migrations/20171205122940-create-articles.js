@@ -15,40 +15,38 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.dropTable('articles');
-  // return db.createTable('articles', {
-  //   id: {
-  //     type: 'uuid',
-  //     primaryKey: true,
-  //   },
-  //   title: {
-  //     type: 'string',
-  //     notNull: true,
-  //   },
-  //   body: {
-  //     type: 'text',
-  //     notNull: true,
-  //   },
-  //   slug: {
-  //     type: 'string',
-  //     notNull: true,
-  //   },
-  //   createdAt: {
-  //     type: 'timestamp',
-  //     notNull: true,
-  //     defaultValue: new String('now()'),
-  //   },
-  //   updatedAt: {
-  //     type: 'timestamp',
-  //     notNull: true,
-  //     defaultValue: new String('now()'),
-  //   },
-  // });
+ return db.createTable('articles', {
+    id: {
+      type: 'uuid',
+      primaryKey: true,
+    },
+    title: {
+      type: 'string',
+      notNull: true,
+    },
+    body: {
+      type: 'text',
+      notNull: true,
+    },
+    slug: {
+      type: 'string',
+      notNull: true,
+    },
+    createdAt: {
+      type: 'timestamp',
+      notNull: true,
+      defaultValue: new String('now()'),
+    },
+    updatedAt: {
+      type: 'timestamp',
+      notNull: true,
+      defaultValue: new String('now()'),
+    },
+  });
 };
 
 exports.down = function(db) {
-  return null;
-  //return db.dropTable('articles');
+  return db.dropTable('articles');
 };
 
 exports._meta = {
