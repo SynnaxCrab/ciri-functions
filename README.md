@@ -6,3 +6,7 @@
 Ciri Lambda Functions collection. Currently, there is only one function to perform db migration
 
 ## Deployment & Usage ##
+
+Currently there is no way to test functions locally using apex/up. To test, you have to deploy functions to lambda.
+
+To deploy functions, just set up travis CI, and all is done!
