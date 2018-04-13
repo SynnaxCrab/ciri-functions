@@ -15,22 +15,22 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('articles', {
+  return db.createTable('users', {
     id: {
       type: 'uuid',
       primaryKey: true,
     },
-    title: {
+    email: {
       type: 'string',
       notNull: true,
     },
-    body: {
-      type: 'text',
-      notNull: true,
-    },
-    slug: {
+    name: {
       type: 'string',
       notNull: true,
+    },
+    twitterId: {
+      type: 'integer',
+      notNull: false,
     },
     createdAt: {
       type: 'timestamp',
@@ -46,7 +46,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  return db.dropTable('articles');
+  return db.dropTable('users');
 };
 
 exports._meta = {
