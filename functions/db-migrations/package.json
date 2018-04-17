@@ -6,7 +6,7 @@
   "scripts": {
     "migration:create": "db-migrate create",
     "db:reset": "db-migrate reset",
-    "migrate:up": "db-migrate up",
+    "migrate:up": "db-migrate up && ./pg_dump.sh > schema.sql",
     "migrate:up:dry-run": "db-migrate up --dry-run"
   },
   "dependencies": {
