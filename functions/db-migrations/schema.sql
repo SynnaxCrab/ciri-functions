@@ -38,16 +38,79 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE public.articles (
-    id uuid NOT NULL,
-    title character varying NOT NULL,
-    body text NOT NULL,
-    slug character varying NOT NULL,
-    "createdAt" timestamp without time zone DEFAULT now() NOT NULL,
-    "updatedAt" timestamp without time zone DEFAULT now() NOT NULL
+    id integer NOT NULL,
+    uuid uuid,
+    title character varying(255),
+    slug character varying(255),
+    body jsonb,
+    "userId" bigint,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone
 );
 
 
 ALTER TABLE public.articles OWNER TO postgres;
+
+--
+-- Name: articles_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.articles_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.articles_id_seq OWNER TO postgres;
+
+--
+-- Name: articles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.articles_id_seq OWNED BY public.articles.id;
+
+
+--
+-- Name: identities; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.identities (
+    id integer NOT NULL,
+    uuid uuid,
+    uid character varying(255),
+    provider character varying(255),
+    "userId" bigint,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone
+);
+
+
+ALTER TABLE public.identities OWNER TO postgres;
+
+--
+-- Name: identities_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.identities_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.identities_id_seq OWNER TO postgres;
+
+--
+-- Name: identities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.identities_id_seq OWNED BY public.identities.id;
+
 
 --
 -- Name: migrations; Type: TABLE; Schema: public; Owner: postgres
@@ -55,8 +118,9 @@ ALTER TABLE public.articles OWNER TO postgres;
 
 CREATE TABLE public.migrations (
     id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    run_on timestamp without time zone NOT NULL
+    name character varying(255),
+    batch integer,
+    migration_time timestamp with time zone
 );
 
 
@@ -89,16 +153,52 @@ ALTER SEQUENCE public.migrations_id_seq OWNED BY public.migrations.id;
 --
 
 CREATE TABLE public.users (
-    id uuid NOT NULL,
-    email character varying NOT NULL,
-    name character varying NOT NULL,
-    "twitterId" integer,
-    "createdAt" timestamp without time zone DEFAULT now() NOT NULL,
-    "updatedAt" timestamp without time zone DEFAULT now() NOT NULL
+    id integer NOT NULL,
+    uuid uuid,
+    email character varying(255),
+    name character varying(255),
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone
 );
 
 
 ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: articles id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.articles ALTER COLUMN id SET DEFAULT nextval('public.articles_id_seq'::regclass);
+
+
+--
+-- Name: identities id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.identities ALTER COLUMN id SET DEFAULT nextval('public.identities_id_seq'::regclass);
+
 
 --
 -- Name: migrations id; Type: DEFAULT; Schema: public; Owner: postgres
@@ -108,10 +208,25 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
 -- Data for Name: articles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.articles (id, title, body, slug, "createdAt", "updatedAt") FROM stdin;
+COPY public.articles (id, uuid, title, slug, body, "userId", created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: identities; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.identities (id, uuid, uid, provider, "userId", created_at, updated_at) FROM stdin;
 \.
 
 
@@ -119,9 +234,8 @@ COPY public.articles (id, title, body, slug, "createdAt", "updatedAt") FROM stdi
 -- Data for Name: migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.migrations (id, name, run_on) FROM stdin;
-1	/20171205122940-create-articles	2018-04-14 01:11:15.947
-2	/20180413145918-create-users	2018-04-14 01:11:15.978
+COPY public.migrations (id, name, batch, migration_time) FROM stdin;
+1	20180418165121_create_all_tables.js	1	2018-04-18 17:20:09.365+08
 \.
 
 
@@ -129,16 +243,36 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, email, name, "twitterId", "createdAt", "updatedAt") FROM stdin;
-9fbc04db-e0f4-4ae4-9111-765dd9ddc72d	winfield301@gmail.com	lainuo	10897002	2018-04-14 01:13:14.033438	2018-04-14 01:13:14.033438
+COPY public.users (id, uuid, email, name, created_at, updated_at) FROM stdin;
 \.
+
+
+--
+-- Name: articles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.articles_id_seq', 1, false);
+
+
+--
+-- Name: identities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.identities_id_seq', 1, false);
 
 
 --
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 2, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1, true);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
@@ -147,6 +281,14 @@ SELECT pg_catalog.setval('public.migrations_id_seq', 2, true);
 
 ALTER TABLE ONLY public.articles
     ADD CONSTRAINT articles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: identities identities_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.identities
+    ADD CONSTRAINT identities_pkey PRIMARY KEY (id);
 
 
 --
@@ -163,6 +305,36 @@ ALTER TABLE ONLY public.migrations
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: articles_userid_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX articles_userid_index ON public.articles USING btree ("userId");
+
+
+--
+-- Name: identities_userid_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX identities_userid_index ON public.identities USING btree ("userId");
+
+
+--
+-- Name: articles articles_userid_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT articles_userid_foreign FOREIGN KEY ("userId") REFERENCES public.users(id);
+
+
+--
+-- Name: identities identities_userid_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.identities
+    ADD CONSTRAINT identities_userid_foreign FOREIGN KEY ("userId") REFERENCES public.users(id);
 
 
 --

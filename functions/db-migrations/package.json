@@ -4,14 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "migration:create": "db-migrate create",
-    "db:reset": "db-migrate reset",
-    "migrate:up": "db-migrate up && ./pg_dump.sh > schema.sql",
-    "migrate:up:dry-run": "db-migrate up --dry-run"
+    "migration:create": "knex-migrate generate",
+    "db:reset": "knex-migrate down --to 0",
+    "migrate:up": "knex-migrate up && ./pg_dump.sh > schema.sql",
+    "migrate:down": "knex-migrate down && ./pg_dump.sh > schema.sql"
   },
   "dependencies": {
-    "db-migrate": "^0.10.2",
-    "db-migrate-pg": "^0.2.5",
-    "dotenv": "^4.0.0"
+    "dotenv": "^4.0.0",
+    "knex": "^0.14.6",
+    "knex-migrate": "^1.5.5",
+    "pg": "^7.4.1"
   }
 }
