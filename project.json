@@ -1,6 +1,7 @@
 {
   "name": "ciri-functions",
   "description": "ciri functions",
+  "runtime": "nodejs8.10",
   "memory": 128,
   "timeout": 5,
   "role": "arn:aws:iam::085425006770:role/ciri-functions_lambda_function",
