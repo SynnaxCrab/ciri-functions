@@ -43,7 +43,7 @@ CREATE TABLE public.articles (
     title character varying(255),
     slug character varying(255),
     body jsonb,
-    "userId" bigint,
+    user_id bigint,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -82,7 +82,7 @@ CREATE TABLE public.identities (
     uuid uuid,
     uid character varying(255),
     provider character varying(255),
-    "userId" bigint,
+    user_id bigint,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -157,6 +157,7 @@ CREATE TABLE public.users (
     uuid uuid,
     email character varying(255),
     name character varying(255),
+    token character varying(255),
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -218,7 +219,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: articles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.articles (id, uuid, title, slug, body, "userId", created_at, updated_at) FROM stdin;
+COPY public.articles (id, uuid, title, slug, body, user_id, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -226,7 +227,7 @@ COPY public.articles (id, uuid, title, slug, body, "userId", created_at, updated
 -- Data for Name: identities; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.identities (id, uuid, uid, provider, "userId", created_at, updated_at) FROM stdin;
+COPY public.identities (id, uuid, uid, provider, user_id, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -235,7 +236,7 @@ COPY public.identities (id, uuid, uid, provider, "userId", created_at, updated_a
 --
 
 COPY public.migrations (id, name, batch, migration_time) FROM stdin;
-1	20180418165121_create_all_tables.js	1	2018-04-18 17:20:09.365+08
+4	20180418165121_create_all_tables.js	1	2018-05-10 16:43:40.447+08
 \.
 
 
@@ -243,7 +244,7 @@ COPY public.migrations (id, name, batch, migration_time) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, uuid, email, name, created_at, updated_at) FROM stdin;
+COPY public.users (id, uuid, email, name, token, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -265,7 +266,7 @@ SELECT pg_catalog.setval('public.identities_id_seq', 1, false);
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 4, true);
 
 
 --
@@ -308,33 +309,33 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: articles_userid_index; Type: INDEX; Schema: public; Owner: postgres
+-- Name: articles_user_id_index; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX articles_userid_index ON public.articles USING btree ("userId");
-
-
---
--- Name: identities_userid_index; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX identities_userid_index ON public.identities USING btree ("userId");
+CREATE INDEX articles_user_id_index ON public.articles USING btree (user_id);
 
 
 --
--- Name: articles articles_userid_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: identities_user_id_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX identities_user_id_index ON public.identities USING btree (user_id);
+
+
+--
+-- Name: articles articles_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.articles
-    ADD CONSTRAINT articles_userid_foreign FOREIGN KEY ("userId") REFERENCES public.users(id);
+    ADD CONSTRAINT articles_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
--- Name: identities identities_userid_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: identities identities_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.identities
-    ADD CONSTRAINT identities_userid_foreign FOREIGN KEY ("userId") REFERENCES public.users(id);
+    ADD CONSTRAINT identities_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --

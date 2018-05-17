@@ -4,6 +4,7 @@ exports.up = async function(knex) {
     t.uuid('uuid')
     t.string('email')
     t.string('name')
+    t.string('token')
     t.timestamps()
   })
 
@@ -13,7 +14,7 @@ exports.up = async function(knex) {
     t.string('uid')
     t.string('provider')
     t
-      .bigInteger('userId')
+      .bigInteger('user_id')
       .references('id')
       .inTable('users')
       .index()
@@ -27,7 +28,7 @@ exports.up = async function(knex) {
     t.string('slug')
     t.jsonb('body')
     t
-      .bigInteger('userId')
+      .bigInteger('user_id')
       .references('id')
       .inTable('users')
       .index()
