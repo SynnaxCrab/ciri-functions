@@ -6,6 +6,7 @@
   "scripts": {
     "migration:create": "knex-migrate generate",
     "db:reset": "knex-migrate down --to 0",
+    "db:redo": "knex-migrate redo --verbose",
     "migrate:up": "knex-migrate up && ./pg_dump.sh > schema.sql",
     "migrate:down": "knex-migrate down && ./pg_dump.sh > schema.sql"
   },
