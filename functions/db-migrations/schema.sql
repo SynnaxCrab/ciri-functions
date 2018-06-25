@@ -39,9 +39,9 @@ SET default_with_oids = false;
 
 CREATE TABLE public.articles (
     id integer NOT NULL,
-    uuid uuid,
-    title character varying(255),
-    slug character varying(255),
+    uuid uuid NOT NULL,
+    title character varying(255) NOT NULL,
+    slug character varying(255) NOT NULL,
     body jsonb,
     user_id bigint,
     created_at timestamp with time zone,
@@ -79,9 +79,9 @@ ALTER SEQUENCE public.articles_id_seq OWNED BY public.articles.id;
 
 CREATE TABLE public.identities (
     id integer NOT NULL,
-    uuid uuid,
-    uid character varying(255),
-    provider character varying(255),
+    uuid uuid NOT NULL,
+    uid character varying(255) NOT NULL,
+    provider character varying(255) NOT NULL,
     user_id bigint,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
@@ -149,54 +149,15 @@ ALTER SEQUENCE public.migrations_id_seq OWNED BY public.migrations.id;
 
 
 --
--- Name: oauth_access_tokens; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.oauth_access_tokens (
-    id integer NOT NULL,
-    token character varying(255),
-    expires_at timestamp with time zone,
-    redirect_uri text,
-    oauth_client_id bigint,
-    user_id bigint,
-    created_at timestamp with time zone,
-    updated_at timestamp with time zone
-);
-
-
-ALTER TABLE public.oauth_access_tokens OWNER TO postgres;
-
---
--- Name: oauth_access_tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.oauth_access_tokens_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.oauth_access_tokens_id_seq OWNER TO postgres;
-
---
--- Name: oauth_access_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.oauth_access_tokens_id_seq OWNED BY public.oauth_access_tokens.id;
-
-
---
 -- Name: oauth_authorization_codes; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.oauth_authorization_codes (
     id integer NOT NULL,
-    code character varying(255),
-    expires_at timestamp with time zone,
-    redirect_uri text,
+    code character varying(255) NOT NULL,
+    expires_at timestamp with time zone NOT NULL,
+    redirect_uri text NOT NULL,
+    scope text,
     oauth_client_id bigint,
     user_id bigint,
     created_at timestamp with time zone,
@@ -234,9 +195,10 @@ ALTER SEQUENCE public.oauth_authorization_codes_id_seq OWNED BY public.oauth_aut
 
 CREATE TABLE public.oauth_clients (
     id integer NOT NULL,
-    uuid uuid,
-    uid character varying(255),
-    secret character varying(255),
+    uuid uuid NOT NULL,
+    name character varying(255) NOT NULL,
+    uid character varying(255) NOT NULL,
+    secret character varying(255) NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -267,15 +229,56 @@ ALTER SEQUENCE public.oauth_clients_id_seq OWNED BY public.oauth_clients.id;
 
 
 --
+-- Name: oauth_tokens; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.oauth_tokens (
+    id integer NOT NULL,
+    access_token character varying(255) NOT NULL,
+    expires_at timestamp with time zone NOT NULL,
+    refresh_token character varying(255) NOT NULL,
+    refresh_token_expires_at timestamp with time zone NOT NULL,
+    scope text,
+    oauth_client_id bigint,
+    user_id bigint,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone
+);
+
+
+ALTER TABLE public.oauth_tokens OWNER TO postgres;
+
+--
+-- Name: oauth_tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.oauth_tokens_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.oauth_tokens_id_seq OWNER TO postgres;
+
+--
+-- Name: oauth_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.oauth_tokens_id_seq OWNED BY public.oauth_tokens.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.users (
     id integer NOT NULL,
-    uuid uuid,
-    email character varying(255),
-    name character varying(255),
-    token character varying(255),
+    uuid uuid NOT NULL,
+    email character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -327,13 +330,6 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
--- Name: oauth_access_tokens id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('public.oauth_access_tokens_id_seq'::regclass);
-
-
---
 -- Name: oauth_authorization_codes id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -345,6 +341,13 @@ ALTER TABLE ONLY public.oauth_authorization_codes ALTER COLUMN id SET DEFAULT ne
 --
 
 ALTER TABLE ONLY public.oauth_clients ALTER COLUMN id SET DEFAULT nextval('public.oauth_clients_id_seq'::regclass);
+
+
+--
+-- Name: oauth_tokens id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.oauth_tokens ALTER COLUMN id SET DEFAULT nextval('public.oauth_tokens_id_seq'::regclass);
 
 
 --
@@ -375,15 +378,7 @@ COPY public.identities (id, uuid, uid, provider, user_id, created_at, updated_at
 --
 
 COPY public.migrations (id, name, batch, migration_time) FROM stdin;
-6	20180418165121_create_all_tables.js	1	2018-06-21 09:19:20.754+08
-\.
-
-
---
--- Data for Name: oauth_access_tokens; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.oauth_access_tokens (id, token, expires_at, redirect_uri, oauth_client_id, user_id, created_at, updated_at) FROM stdin;
+7	20180418165121_create_all_tables.js	1	2018-06-25 22:57:49.564+08
 \.
 
 
@@ -391,7 +386,7 @@ COPY public.oauth_access_tokens (id, token, expires_at, redirect_uri, oauth_clie
 -- Data for Name: oauth_authorization_codes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.oauth_authorization_codes (id, code, expires_at, redirect_uri, oauth_client_id, user_id, created_at, updated_at) FROM stdin;
+COPY public.oauth_authorization_codes (id, code, expires_at, redirect_uri, scope, oauth_client_id, user_id, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -399,7 +394,15 @@ COPY public.oauth_authorization_codes (id, code, expires_at, redirect_uri, oauth
 -- Data for Name: oauth_clients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.oauth_clients (id, uuid, uid, secret, created_at, updated_at) FROM stdin;
+COPY public.oauth_clients (id, uuid, name, uid, secret, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: oauth_tokens; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.oauth_tokens (id, access_token, expires_at, refresh_token, refresh_token_expires_at, scope, oauth_client_id, user_id, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -407,7 +410,7 @@ COPY public.oauth_clients (id, uuid, uid, secret, created_at, updated_at) FROM s
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, uuid, email, name, token, created_at, updated_at) FROM stdin;
+COPY public.users (id, uuid, email, name, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -429,14 +432,7 @@ SELECT pg_catalog.setval('public.identities_id_seq', 1, false);
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 6, true);
-
-
---
--- Name: oauth_access_tokens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.oauth_access_tokens_id_seq', 1, false);
+SELECT pg_catalog.setval('public.migrations_id_seq', 7, true);
 
 
 --
@@ -451,6 +447,13 @@ SELECT pg_catalog.setval('public.oauth_authorization_codes_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.oauth_clients_id_seq', 1, false);
+
+
+--
+-- Name: oauth_tokens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.oauth_tokens_id_seq', 1, false);
 
 
 --
@@ -469,11 +472,43 @@ ALTER TABLE ONLY public.articles
 
 
 --
+-- Name: articles articles_slug_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT articles_slug_unique UNIQUE (slug);
+
+
+--
+-- Name: articles articles_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT articles_uuid_unique UNIQUE (uuid);
+
+
+--
 -- Name: identities identities_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.identities
     ADD CONSTRAINT identities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: identities identities_uid_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.identities
+    ADD CONSTRAINT identities_uid_unique UNIQUE (uid);
+
+
+--
+-- Name: identities identities_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.identities
+    ADD CONSTRAINT identities_uuid_unique UNIQUE (uuid);
 
 
 --
@@ -485,11 +520,11 @@ ALTER TABLE ONLY public.migrations
 
 
 --
--- Name: oauth_access_tokens oauth_access_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: oauth_authorization_codes oauth_authorization_codes_code_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.oauth_access_tokens
-    ADD CONSTRAINT oauth_access_tokens_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.oauth_authorization_codes
+    ADD CONSTRAINT oauth_authorization_codes_code_unique UNIQUE (code);
 
 
 --
@@ -509,11 +544,67 @@ ALTER TABLE ONLY public.oauth_clients
 
 
 --
+-- Name: oauth_clients oauth_clients_uid_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.oauth_clients
+    ADD CONSTRAINT oauth_clients_uid_unique UNIQUE (uid);
+
+
+--
+-- Name: oauth_clients oauth_clients_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.oauth_clients
+    ADD CONSTRAINT oauth_clients_uuid_unique UNIQUE (uuid);
+
+
+--
+-- Name: oauth_tokens oauth_tokens_access_token_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.oauth_tokens
+    ADD CONSTRAINT oauth_tokens_access_token_unique UNIQUE (access_token);
+
+
+--
+-- Name: oauth_tokens oauth_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.oauth_tokens
+    ADD CONSTRAINT oauth_tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: oauth_tokens oauth_tokens_refresh_token_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.oauth_tokens
+    ADD CONSTRAINT oauth_tokens_refresh_token_unique UNIQUE (refresh_token);
+
+
+--
+-- Name: users users_email_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_unique UNIQUE (email);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_uuid_unique UNIQUE (uuid);
 
 
 --
@@ -531,20 +622,6 @@ CREATE INDEX identities_user_id_index ON public.identities USING btree (user_id)
 
 
 --
--- Name: oauth_access_tokens_oauth_client_id_index; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX oauth_access_tokens_oauth_client_id_index ON public.oauth_access_tokens USING btree (oauth_client_id);
-
-
---
--- Name: oauth_access_tokens_user_id_index; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX oauth_access_tokens_user_id_index ON public.oauth_access_tokens USING btree (user_id);
-
-
---
 -- Name: oauth_authorization_codes_oauth_client_id_index; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -556,6 +633,20 @@ CREATE INDEX oauth_authorization_codes_oauth_client_id_index ON public.oauth_aut
 --
 
 CREATE INDEX oauth_authorization_codes_user_id_index ON public.oauth_authorization_codes USING btree (user_id);
+
+
+--
+-- Name: oauth_tokens_oauth_client_id_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX oauth_tokens_oauth_client_id_index ON public.oauth_tokens USING btree (oauth_client_id);
+
+
+--
+-- Name: oauth_tokens_user_id_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX oauth_tokens_user_id_index ON public.oauth_tokens USING btree (user_id);
 
 
 --
@@ -575,22 +666,6 @@ ALTER TABLE ONLY public.identities
 
 
 --
--- Name: oauth_access_tokens oauth_access_tokens_oauth_client_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.oauth_access_tokens
-    ADD CONSTRAINT oauth_access_tokens_oauth_client_id_foreign FOREIGN KEY (oauth_client_id) REFERENCES public.oauth_clients(id);
-
-
---
--- Name: oauth_access_tokens oauth_access_tokens_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.oauth_access_tokens
-    ADD CONSTRAINT oauth_access_tokens_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: oauth_authorization_codes oauth_authorization_codes_oauth_client_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -604,6 +679,22 @@ ALTER TABLE ONLY public.oauth_authorization_codes
 
 ALTER TABLE ONLY public.oauth_authorization_codes
     ADD CONSTRAINT oauth_authorization_codes_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: oauth_tokens oauth_tokens_oauth_client_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.oauth_tokens
+    ADD CONSTRAINT oauth_tokens_oauth_client_id_foreign FOREIGN KEY (oauth_client_id) REFERENCES public.oauth_clients(id);
+
+
+--
+-- Name: oauth_tokens oauth_tokens_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.oauth_tokens
+    ADD CONSTRAINT oauth_tokens_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
