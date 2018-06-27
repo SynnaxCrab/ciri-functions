@@ -199,8 +199,8 @@ CREATE TABLE public.oauth_clients (
     name character varying(255) NOT NULL,
     uid character varying(255) NOT NULL,
     secret character varying(255) NOT NULL,
-    grants text NOT NULL,
-    redirect_uris text NOT NULL,
+    grants text[] NOT NULL,
+    redirect_uris text[] NOT NULL,
     access_token_lifetime integer,
     refresh_token_lifetime integer,
     created_at timestamp with time zone,
@@ -382,7 +382,7 @@ COPY public.identities (id, uuid, uid, provider, user_id, created_at, updated_at
 --
 
 COPY public.migrations (id, name, batch, migration_time) FROM stdin;
-10	20180418165121_create_all_tables.js	1	2018-06-27 11:16:59.266+08
+11	20180418165121_create_all_tables.js	1	2018-06-27 11:36:25.103+08
 \.
 
 
@@ -436,7 +436,7 @@ SELECT pg_catalog.setval('public.identities_id_seq', 1, false);
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 10, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 11, true);
 
 
 --
