@@ -37,6 +37,10 @@ exports.up = async function(knex) {
       .unique()
       .notNullable()
     t.string('secret').notNullable()
+    t.text('grants').notNullable()
+    t.text('redirect_uris').notNullable()
+    t.integer('access_token_lifetime')
+    t.integer('refresh_token_lifetime')
     t.timestamps()
   })
 

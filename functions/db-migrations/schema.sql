@@ -199,6 +199,10 @@ CREATE TABLE public.oauth_clients (
     name character varying(255) NOT NULL,
     uid character varying(255) NOT NULL,
     secret character varying(255) NOT NULL,
+    grants text NOT NULL,
+    redirect_uris text NOT NULL,
+    access_token_lifetime integer,
+    refresh_token_lifetime integer,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -378,7 +382,7 @@ COPY public.identities (id, uuid, uid, provider, user_id, created_at, updated_at
 --
 
 COPY public.migrations (id, name, batch, migration_time) FROM stdin;
-7	20180418165121_create_all_tables.js	1	2018-06-25 22:57:49.564+08
+10	20180418165121_create_all_tables.js	1	2018-06-27 11:16:59.266+08
 \.
 
 
@@ -394,7 +398,7 @@ COPY public.oauth_authorization_codes (id, code, expires_at, redirect_uri, scope
 -- Data for Name: oauth_clients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.oauth_clients (id, uuid, name, uid, secret, created_at, updated_at) FROM stdin;
+COPY public.oauth_clients (id, uuid, name, uid, secret, grants, redirect_uris, access_token_lifetime, refresh_token_lifetime, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -432,7 +436,7 @@ SELECT pg_catalog.setval('public.identities_id_seq', 1, false);
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 7, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 10, true);
 
 
 --
