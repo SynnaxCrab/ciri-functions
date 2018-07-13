@@ -43,7 +43,7 @@ CREATE TABLE public.articles (
     title character varying(255) NOT NULL,
     slug character varying(255) NOT NULL,
     body jsonb,
-    user_id bigint,
+    user_id integer,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -82,7 +82,7 @@ CREATE TABLE public.identities (
     uuid uuid NOT NULL,
     uid character varying(255) NOT NULL,
     provider character varying(255) NOT NULL,
-    user_id bigint,
+    user_id integer,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -158,8 +158,8 @@ CREATE TABLE public.oauth_authorization_codes (
     expires_at timestamp with time zone NOT NULL,
     redirect_uri text NOT NULL,
     scope text,
-    oauth_client_id bigint,
-    user_id bigint,
+    oauth_client_id integer,
+    user_id integer,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -195,7 +195,6 @@ ALTER SEQUENCE public.oauth_authorization_codes_id_seq OWNED BY public.oauth_aut
 
 CREATE TABLE public.oauth_clients (
     id integer NOT NULL,
-    uuid uuid NOT NULL,
     name character varying(255) NOT NULL,
     uid character varying(255) NOT NULL,
     secret character varying(255) NOT NULL,
@@ -243,8 +242,8 @@ CREATE TABLE public.oauth_tokens (
     refresh_token character varying(255) NOT NULL,
     refresh_token_expires_at timestamp with time zone NOT NULL,
     scope text,
-    oauth_client_id bigint,
-    user_id bigint,
+    oauth_client_id integer,
+    user_id integer,
     created_at timestamp with time zone,
     updated_at timestamp with time zone
 );
@@ -382,7 +381,7 @@ COPY public.identities (id, uuid, uid, provider, user_id, created_at, updated_at
 --
 
 COPY public.migrations (id, name, batch, migration_time) FROM stdin;
-11	20180418165121_create_all_tables.js	1	2018-06-27 11:36:25.103+08
+14	20180418165121_create_all_tables.js	1	2018-06-27 21:05:19.3+08
 \.
 
 
@@ -398,7 +397,7 @@ COPY public.oauth_authorization_codes (id, code, expires_at, redirect_uri, scope
 -- Data for Name: oauth_clients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.oauth_clients (id, uuid, name, uid, secret, grants, redirect_uris, access_token_lifetime, refresh_token_lifetime, created_at, updated_at) FROM stdin;
+COPY public.oauth_clients (id, name, uid, secret, grants, redirect_uris, access_token_lifetime, refresh_token_lifetime, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -436,7 +435,7 @@ SELECT pg_catalog.setval('public.identities_id_seq', 1, false);
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 11, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 14, true);
 
 
 --
@@ -553,14 +552,6 @@ ALTER TABLE ONLY public.oauth_clients
 
 ALTER TABLE ONLY public.oauth_clients
     ADD CONSTRAINT oauth_clients_uid_unique UNIQUE (uid);
-
-
---
--- Name: oauth_clients oauth_clients_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.oauth_clients
-    ADD CONSTRAINT oauth_clients_uuid_unique UNIQUE (uuid);
 
 
 --
